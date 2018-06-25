@@ -26,10 +26,23 @@ def print_ratings(all_ratings):
     """
     Print out restaurant and rating pairs in alphabetical order
     """
-
+    print("Here is the current list of all ratings:")
     for restaurant, rating in sorted(all_ratings.items()):
         print(f'{restaurant} is rated at {rating}.')
 
 
-restaurant_ratings = get_ratings('scores.txt')
-print_ratings(restaurant_ratings)
+def add_view_restaurant_ratings():
+    """
+    Allows the user to add new ratings and view full list"
+    """
+
+    restaurant_ratings = get_ratings('scores.txt')
+
+    new_restaurant = (input("what is the restaurant you want to judge? ")).title()
+    new_rating = input("what is your rating? ")
+
+    restaurant_ratings[new_restaurant] = new_rating
+    print_ratings(restaurant_ratings)
+
+
+add_view_restaurant_ratings()
