@@ -39,7 +39,18 @@ def add_view_restaurant_ratings():
     restaurant_ratings = get_ratings('scores.txt')
 
     new_restaurant = (input("what is the restaurant you want to judge? ")).title()
-    new_rating = input("what is your rating? ")
+
+    while True:
+        new_rating = input("what is your rating? ")
+        try:
+            new_rating = int(new_rating)
+        except ValueError:
+            print('You gotta enter a number!')
+        else:
+            if 0 < new_rating < 6:
+                break
+            else:
+                print('You gotta enter a number from 1 to 5!')
 
     restaurant_ratings[new_restaurant] = new_rating
     print_ratings(restaurant_ratings)
