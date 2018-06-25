@@ -14,11 +14,22 @@ def get_ratings(filename):
     all_ratings = {}
 
     with open(filename) as f:
-        for line in filename.rstrip():
-            for restaurant, rating in line.split(":"):
-                all_ratings[restaurant] = rating
+        for line in f:
+            line = line.rstrip()
+            restaurant, rating = line.split(":")
+            all_ratings[restaurant] = rating
 
     return all_ratings
 
 
-print(all_ratings)
+def print_ratings(all_ratings):
+    """
+    Print out restaurant and rating pairs in alphabetical order
+    """
+
+    for restaurant, rating in sorted(all_ratings.items()):
+        print(f'{restaurant} is rated at {rating}.')
+
+
+restaurant_ratings = get_ratings('scores.txt')
+print_ratings(restaurant_ratings)
