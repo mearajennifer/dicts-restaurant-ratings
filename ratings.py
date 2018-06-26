@@ -1,5 +1,5 @@
 """Restaurant rating lister."""
-
+from random import choice
 
 # put your code here
 def get_ratings(filename):
@@ -32,8 +32,6 @@ def add_restaurant_ratings(restaurant_ratings):
     Allows the user to add new ratings and view full list"
     """
 
-    # restaurant_ratings = get_ratings('scores.txt')
-
     new_restaurant = (input("what is the restaurant you want to judge? ")).title()
 
     while True:
@@ -49,8 +47,6 @@ def add_restaurant_ratings(restaurant_ratings):
                 print('You gotta enter a number from 1 to 5!')
 
     restaurant_ratings[new_restaurant] = new_rating
-    return restaurant_ratings
-    # print_ratings(restaurant_ratings)
 
 
 def open_menu():
@@ -63,11 +59,28 @@ def open_menu():
         What would you like to do?
         1: View all current ratings
         2: Add a new rating
-        3: QUIT
+        3: Update a random rating
+        4: QUIT
         """)
     answer = input("> ")
 
     return answer
+
+
+def random_rating(restaurant_ratings):
+    """
+    Picks a random restaurant for the user to review
+    """
+    rests = list(restaurant_ratings.keys())
+    random_restaurant = choice(rests)
+
+    print(f"""
+        the chosen restaurant is {random_restaurant}
+        with the rating {restaurant_ratings[random_restaurant]}
+        """)
+
+    new_rating = input("what should the new rating be? ")
+    restaurant_ratings[random_restaurant] = new_rating
 
 
 def exit_game(restaurant_ratings):
@@ -79,23 +92,15 @@ def exit_game(restaurant_ratings):
     quit()
 
 
-def play_rating_game():
-    """
-    Allows user to choose to see all ratings, and new ratings, or quit
-    """
+restaurant_ratings = get_ratings('scores.txt')
 
-    # Create ratings dictionary from file
-    restaurant_ratings = get_ratings('scores.txt')
+menu_action = {"1": print_ratings,
+               "2": add_restaurant_ratings,
+               "3": random_rating,
+               "4": exit_game
+               }
 
-    menu_action = {"1": print_ratings,
-                   "2": add_restaurant_ratings,
-                   "3": exit_game
-                   }
-
-    while True:
-        # Print the menu and get user choice
-        menu_choice = open_menu()
-        menu_action[menu_choice](restaurant_ratings)
-
-
-play_rating_game()
+while True:
+    # Print the menu and get user choice
+    menu_choice = open_menu()
+    menu_action[menu_choice](restaurant_ratings)
