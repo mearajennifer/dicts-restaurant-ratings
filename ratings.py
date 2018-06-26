@@ -1,5 +1,7 @@
 """Restaurant rating lister."""
 from random import choice
+from statistics import mean
+
 
 # put your code here
 def get_ratings(filename):
@@ -13,29 +15,17 @@ def get_ratings(filename):
         for line in f:
             line = line.rstrip()
             restaurant, rating = line.split(":")
-            all_ratings[restaurant] = rating
+            all_ratings[restaurant] = int(rating)
 
     return all_ratings
 
 
-def print_ratings(all_ratings):
+def get_user_rating():
     """
-    Print out restaurant and rating pairs in alphabetical order
+    Asks user for new rating, verifies it is a number and from 1 to 5.
     """
-    print("Here is the current list of all ratings:")
-    for restaurant, rating in sorted(all_ratings.items()):
-        print(f'{restaurant} is rated at {rating}.')
-
-
-def add_restaurant_ratings(restaurant_ratings):
-    """
-    Allows the user to add new ratings and view full list"
-    """
-
-    new_restaurant = (input("what is the restaurant you want to judge? ")).title()
-
     while True:
-        new_rating = input("what is your rating? ")
+        new_rating = input("\nNEW RATING: ")
         try:
             new_rating = int(new_rating)
         except ValueError:
@@ -46,6 +36,27 @@ def add_restaurant_ratings(restaurant_ratings):
             else:
                 print('You gotta enter a number from 1 to 5!')
 
+    return new_rating
+
+
+def print_ratings(all_ratings):
+    """
+    Print out restaurant and rating pairs in alphabetical order
+    """
+    print("\nRESTAURANT RATINGS:")
+    for restaurant, rating in sorted(all_ratings.items()):
+        print(f'        {restaurant} is rated at {rating}.')
+
+
+def add_restaurant_ratings(restaurant_ratings):
+    """
+    Allows the user to add new ratings and view full list"
+    """
+
+    new_restaurant = (input("\nNEW RESTAURANT: ")).title()
+
+    new_rating = get_user_rating()
+
     restaurant_ratings[new_restaurant] = new_rating
 
 
@@ -54,13 +65,12 @@ def open_menu():
     Displays a menu for the user to view ratings, add rating, or quit.
     """
 
-    print("Main Menu:")
-    print("""
-        What would you like to do?
+    print("""\nMAIN MENU:
         1: View all current ratings
         2: Add a new rating
         3: Update a random rating
-        4: QUIT
+        4: Choose a rating to update
+        5: QUIT
         """)
     answer = input("> ")
 
@@ -71,24 +81,53 @@ def random_rating(restaurant_ratings):
     """
     Picks a random restaurant for the user to review
     """
-    rests = list(restaurant_ratings.keys())
-    random_restaurant = choice(rests)
+    all_rests = list(restaurant_ratings.keys())
+    rand_rest = choice(all_rests)
 
-    print(f"""
-        the chosen restaurant is {random_restaurant}
-        with the rating {restaurant_ratings[random_restaurant]}
-        """)
+    rand_rest_text = """
+    RESTAURANT: {}
+    CURRENT RATING: {}"""
 
-    new_rating = input("what should the new rating be? ")
-    restaurant_ratings[random_restaurant] = new_rating
+    print(rand_rest_text.format(rand_rest, restaurant_ratings[rand_rest]))
+
+    new_rating = get_user_rating()
+
+    restaurant_ratings[rand_rest] = new_rating
+
+
+def choose_rating(restaurant_ratings):
+    """
+    Allows user to select a restaurant and update the rating.
+    """
+
+    while True:
+        user_rest_choice = (input("\nRESTAURANT: ")).title()
+
+        if user_rest_choice in restaurant_ratings:
+            break
+        else:
+            print("You gotta put in a restaurant that is in the list!")
+
+    print(f"CURRENT RATING: {restaurant_ratings[user_rest_choice]}")
+
+    new_rating = get_user_rating()
+
+    restaurant_ratings[user_rest_choice] = new_rating
 
 
 def exit_game(restaurant_ratings):
     """
     Says goodbye to the user and quits game
     """
-    print('Thanks for rating restaurants! Final rating list:')
-    print_ratings(restaurant_ratings)
+    goodbye = """
+    Thanks for rating restaurants! 
+    You've rated {} restaurants with an average rating of {:.2}.
+    """
+
+    num_rests = len(restaurant_ratings.keys())
+    average = mean(restaurant_ratings.values())
+
+    print(goodbye.format(num_rests, average))
     quit()
 
 
@@ -97,7 +136,8 @@ restaurant_ratings = get_ratings('scores.txt')
 menu_action = {"1": print_ratings,
                "2": add_restaurant_ratings,
                "3": random_rating,
-               "4": exit_game
+               "4": choose_rating,
+               "5": exit_game
                }
 
 while True:
