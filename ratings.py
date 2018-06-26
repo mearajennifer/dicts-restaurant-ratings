@@ -2,10 +2,6 @@
 
 
 # put your code here
-# Read the ratings from the file
-# Store them in a dictionary
-# Spit out the ratings in alphabetical order
-
 def get_ratings(filename):
     """
     Reads file and returns restaurants and ratings in a dictionary.
@@ -31,12 +27,12 @@ def print_ratings(all_ratings):
         print(f'{restaurant} is rated at {rating}.')
 
 
-def add_view_restaurant_ratings():
+def add_restaurant_ratings(restaurant_ratings):
     """
     Allows the user to add new ratings and view full list"
     """
 
-    restaurant_ratings = get_ratings('scores.txt')
+    # restaurant_ratings = get_ratings('scores.txt')
 
     new_restaurant = (input("what is the restaurant you want to judge? ")).title()
 
@@ -53,7 +49,53 @@ def add_view_restaurant_ratings():
                 print('You gotta enter a number from 1 to 5!')
 
     restaurant_ratings[new_restaurant] = new_rating
+    return restaurant_ratings
+    # print_ratings(restaurant_ratings)
+
+
+def open_menu():
+    """
+    Displays a menu for the user to view ratings, add rating, or quit.
+    """
+
+    print("Main Menu:")
+    print("""
+        What would you like to do?
+        1: View all current ratings
+        2: Add a new rating
+        3: QUIT
+        """)
+    answer = input("> ")
+
+    return answer
+
+
+def exit_game(restaurant_ratings):
+    """
+    Says goodbye to the user and quits game
+    """
+    print('Thanks for rating restaurants! Final rating list:')
     print_ratings(restaurant_ratings)
+    quit()
 
 
-add_view_restaurant_ratings()
+def play_rating_game():
+    """
+    Allows user to choose to see all ratings, and new ratings, or quit
+    """
+
+    # Create ratings dictionary from file
+    restaurant_ratings = get_ratings('scores.txt')
+
+    menu_action = {"1": print_ratings,
+                   "2": add_restaurant_ratings,
+                   "3": exit_game
+                   }
+
+    while True:
+        # Print the menu and get user choice
+        menu_choice = open_menu()
+        menu_action[menu_choice](restaurant_ratings)
+
+
+play_rating_game()
