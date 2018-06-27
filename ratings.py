@@ -1,6 +1,7 @@
 """Restaurant rating lister."""
 from random import choice
 from statistics import mean
+import os
 
 
 # put your code here
@@ -100,6 +101,7 @@ def choose_rating(restaurant_ratings):
     Allows user to select a restaurant and update the rating.
     """
 
+    # Enter into loop asking for user choice until they enter a value in the dict
     while True:
         user_rest_choice = (input("\nRESTAURANT: ")).title()
 
@@ -120,18 +122,30 @@ def exit_game(restaurant_ratings):
     Says goodbye to the user and quits game
     """
     goodbye = """
-    Thanks for rating restaurants! 
+    Thanks for rating restaurants!
     You've rated {} restaurants with an average rating of {:.2}.
     """
 
     num_rests = len(restaurant_ratings.keys())
     average = mean(restaurant_ratings.values())
 
+    # Print goodbye message and customize with number of reviews and their average score
     print(goodbye.format(num_rests, average))
     quit()
 
 
-restaurant_ratings = get_ratings('scores.txt')
+# Start main program
+print("WELCOME TO RATE-O-MATIC\n")
+print("Please choose a restaurant rating file:")
+
+# List all text files in currect directory
+for file in os.listdir():
+    if file[-3:] == 'txt':
+        print(f"-- {file}")
+
+# Get user file choice and use to create ratings dictionary
+ratings_txt = input("> ")
+restaurant_ratings = get_ratings(ratings_txt)
 
 menu_action = {"1": print_ratings,
                "2": add_restaurant_ratings,
@@ -141,6 +155,6 @@ menu_action = {"1": print_ratings,
                }
 
 while True:
-    # Print the menu and get user choice
+    # Print the menu, get user choice, use menu_action dictionary to complete action
     menu_choice = open_menu()
     menu_action[menu_choice](restaurant_ratings)
